@@ -6,17 +6,21 @@ USAGE_FIELDS = %w(student_id question_id assigned_hours_ago answered_hours_ago)
 Question = Struct.new(*QUESTION_FIELDS.map(&:to_sym))
 Usage = Struct.new(*QUESTION_FIELDS.map(&:to_sym))
 
-def generate_quiz
-  puts 'How many questions do you want?'
-  total = gets.to_i
+def generate_quiz(s_id = nil, total = nil)
+  puts 'Please enter your student id:' if s_id.nil?
+  student_id = s_id || gets
+  return generate_quiz if student_id.chomp.empty?
 
-  if total <= 0
-    puts "You need to ask for 1 or more questions"
-    generate_quiz
-  else
-    puts "Question ids are:"
-    puts questions.sample(total).map(&:question_id)
-  end
+  puts 'How many questions do you want?' if total.nil?
+  total = total || gets.to_i
+  return generate_quiz(student_id) if total <= 0
+
+  select_questions(total)
+end
+
+def select_questions(total)
+  puts "Question ids are:"
+  puts questions.sample(total).map(&:question_id)
 end
 
 def questions
